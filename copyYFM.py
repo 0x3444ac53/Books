@@ -31,22 +31,16 @@ def get_read_table(books: list) -> dict:
     return readBooks
 
 def get_unread_table(books: list) -> list:
-    table = []
-    for i in filter(lambda x: not x["time-read"] and not x["Started"], books):
-        row = "  |  ".join([
-                i["Title"], 
-                i["Author"], 
-                f"{i['Series']}, {i['number-in-series']}" if i['Series'] else "N/A"])
-        table.append("|  " + row + "  |")
-    return "\n".join(table)
+    tabledata = get_table_data_by_key(["Title", "Author", "Series"],
+    filter(lambda x: not x["time-read"] and not x["Started"], books))
+    
+    return make_djot_table(tabledata)
 
 
 
 def make_section_of_read(section, header):
         section = sorted(section, key=lambda x: x['number-in-series'] if x['number-in-series'] else 1)
-        data = [
-          [f"[{i['Title']}]({i['fileName']})", i["Author"], i['time-read'].strftime("%b %d, %Y"), i['Mood'] if i['Mood'] else '']           for i in section]
-
+        data = get_table_data_by_key(["Title", "Author", "time-read", "Mood"], section)
         return f"""
         ### {header}\n\n
         |  Title  |  Author  |  Read On  |  Mood  |
@@ -69,15 +63,36 @@ def get_currently_reading(books: list) -> str:
                        filter(lambda x: not x['time-read'], 
                        filter(lambda x: not x['abandoned'],
                               books)))
-    table = "\n".join(map(lambda x: "|  " + "  |  ".join(x) + "  |",
-    [[i['Title'], i['Author'], i['Started'].strftime("%b %d, %Y")] for i in currentlyReading]))
-    return table
+    tabledata = get_table_data_by_key(["Title", "Author", "Started"], currentlyReading)
+    return make_djot_table(tabledata)
 
 def get_abandoned_books(books : list) -> str:
-    abandoned = [[i["Title"], i["Author"], i["abandoned"].strftime("%b %d, %Y")]
-                 for i in filter(lambda x: x['abandoned'], books)]
-    return "\n".join(map(lambda x: "|  " + "  |  ".join(x) + "  |" , abandoned))
-    
+    abandoned = get_table_data_by_key(
+            ["Title", "Author", "abandoned"],
+            filter(lambda x: x['abandoned'], books))
+    return make_djot_table(abandoned)
+
+def get_table_data_by_key(keys: list, books: dict) -> list:
+    returnValue = []
+    for book in books:
+        dataList = []
+        for key in keys:
+            if key == "Title":
+                dataList.append(f"[{book[key]}](books/{book['fileName']})")
+            elif isinstance(book[key], datetime.date):
+                dataList.append(book[key].strftime("%b %d, %Y"))
+            elif not book[key]:
+                dataList.append('')
+            else:
+                dataList.append(book[key])
+        returnValue.append(dataList)
+    return returnValue
+
+
+def make_djot_table(someData: iter) -> str:
+    return "\n".join(map(lambda x: "|  " + "  |  ".join(x) + "  |" , someData))
+
+
 
 
 if __name__ == '__main__':
@@ -101,10 +116,14 @@ if __name__ == '__main__':
 
 ## Unread
 
+|  Title  |  Author  |  Series  |
+|---------|----------|----------|
 {}
 
 ## Abandoned
 
+|  Title  |  Author  |  Stopped reading on  |
+|---------|----------|----------------------|
 {}
           """.format(
               currentlyReading, 

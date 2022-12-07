@@ -33,6 +33,11 @@ body {
   background-color: var(--base00);
 }
 
+table {
+  width: 90%;
+  table-layout: fixed;
+}
+
 /* Apply base16 colors to the table headings */
 table th {
   color: var(--base09);
