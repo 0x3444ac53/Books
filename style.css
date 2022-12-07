@@ -1,5 +1,6 @@
 /* Twilight by David Hart (https://github.com/hartbit) */
 
+@import url('https://fonts.googleapis.com/css?family=La+Belle+Aurore&display=swap');
 :root {
   --base00: #1e1e1e;
   --base01: #323537;
@@ -19,12 +20,23 @@
   --base0F: #9b703f;
 }
 
+h1 {
+  font-size: 50;
+  text-align: center;
+  font-family: La Belle Aurore;
+  color: var(--base0E)
+}
+
 h2 {
-    color: var(--base0A)
+    color: var(--base0A);
+    font-family: La Belle Aurore;
+    font-size: 35;
 }
 
 h3 {
-    color: var(--base0B)
+    color: var(--base0B);
+    font-family: La Belle Aurore;
+    font-size: 30;
 }
 
 body {
@@ -42,6 +54,8 @@ table {
 table th {
   color: var(--base09);
   background-color: var(--base00);
+  font-family: La Belle Aurore;
+  font-size: 25;
 }
 
 /* Apply base16 colors to the table cells */
