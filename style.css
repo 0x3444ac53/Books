@@ -1,0 +1,58 @@
+/* Twilight by David Hart (https://github.com/hartbit) */
+
+:root {
+  --base00: #1e1e1e;
+  --base01: #323537;
+  --base02: #464b50;
+  --base03: #5f5a60;
+  --base04: #838184;
+  --base05: #a7a7a7;
+  --base06: #c3c3c3;
+  --base07: #ffffff;
+  --base08: #cf6a4c;
+  --base09: #cda869;
+  --base0A: #f9ee98;
+  --base0B: #8f9d6a;
+  --base0C: #afc4db;
+  --base0D: #7587a6;
+  --base0E: #9b859d;
+  --base0F: #9b703f;
+}
+
+h2 {
+    color: var(--base0A)
+}
+
+h3 {
+    color: var(--base0B)
+}
+
+body {
+  margin: 10px;
+  padding: 10px;
+  background-color: var(--base00);
+}
+
+/* Apply base16 colors to the table headings */
+table th {
+  color: var(--base09);
+  background-color: var(--base00);
+}
+
+/* Apply base16 colors to the table cells */
+table td {
+  color: var(--base05);
+  background-color: var(--base00);
+}
+
+table td a {
+  color: var(--base05);
+  background-color: var(--base00);
+}
+
+
+/* Add some padding and border to the table cells */
+table td {
+  padding: 10px;
+  border: 1px solid var(--base01);
+}
