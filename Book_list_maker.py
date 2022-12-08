@@ -1,24 +1,12 @@
 #!/bin/python3
 import os
 from pathlib import Path
-import multiprocessing as mp
-from functools import partial
 from pathlib import Path
 import re
 import yaml
 from pprint import PrettyPrinter
 import datetime
-
-
-def pull_YMF(ogFile):
-    with open(ogFile, 'r') as og:
-        justText = re.search(r'---(.*)---', og.read(), re.DOTALL).group(1).split('\n')
-        for line in justText:
-            if line.startswith("date-created") or line.startswith('force'):
-                justText.remove(line)
-    jesus = yaml.safe_load('\n'.join(justText))
-    jesus['fileName'] = ogFile.name
-    return jesus
+from utils import *
 
 def get_read_table(books: list) -> dict:
     readBooks = dict()
@@ -35,8 +23,6 @@ def get_unread_table(books: list) -> list:
     filter(lambda x: not x["time-read"] and not x["Started"], books))
     
     return make_djot_table(tabledata)
-
-
 
 def make_section_of_read(section, header):
         section = sorted(section, key=lambda x: x['number-in-series'] if x['number-in-series'] else 1)
@@ -72,42 +58,19 @@ def get_abandoned_books(books : list) -> str:
             filter(lambda x: x['abandoned'], books))
     return make_djot_table(abandoned)
 
-def get_table_data_by_key(keys: list, books: dict) -> list:
-    returnValue = []
-    for book in books:
-        dataList = []
-        for key in keys:
-            if key == "Title":
-                dataList.append(f"[{book[key]}](books/{book['fileName']})")
-            elif isinstance(book[key], datetime.date):
-                dataList.append(book[key].strftime("%b %d, %Y"))
-            elif not book[key]:
-                dataList.append('')
-            else:
-                dataList.append(book[key])
-        returnValue.append(dataList)
-    return returnValue
 
-
-def make_djot_table(someData: iter) -> str:
-    return "\n".join(map(lambda x: "|  " + "  |  ".join(x) + "  |" , someData))
-
-
-
-
-if __name__ == '__main__':
-    BooksDir = Path("/home/ellie/vimwiki/Book Files/Books")
-    outputDir = Path("/home/ellie/repos/StaticBooks/Booksfm")
-    books = [pull_YMF(i) for i in [BooksDir / file for file in os.listdir(BooksDir)]]
-    p = PrettyPrinter()
+def make_book_list(books):
     readBooks = get_read_table(books)
     unReadBooks = get_unread_table(books)
     currentlyReading = get_currently_reading(books)
-    print("""
+    return """
 `<LINK href="style.css" rel="stylesheet" type="text/css">`{{=html}}
 
-## Currently Reading
+# Ellie's Awesome Book List
 
+## Currently Reading
+|  Title  |  Author  | Started on |
+|-|-|-|
 {}
 
 ## Read Books
@@ -129,4 +92,4 @@ if __name__ == '__main__':
               currentlyReading, 
               make_read_table(books), 
               get_unread_table(books), 
-              get_abandoned_books(books)))
+              get_abandoned_books(books))
