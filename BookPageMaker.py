@@ -3,6 +3,9 @@ from datetime import datetime, timedelta, date, time
 
 def make_book_page(bookdata):
     template = """
+
+`<LINK href="../style.css" rel="stylesheet" type="text/css">`{{=html}}
+
 # {}
 ## by {}
 
@@ -33,7 +36,9 @@ def make_book_page(bookdata):
             finished_on = bookdata[get_delta]
         delta = finished_on - started_on
         table_data[0].append(f"{delta.days} Days")
-        return template.format(
+    print(f"{headerdata=}")
+    print(f"{table_data=}")
+    return template.format(
             headerdata[0],
             headerdata[1],
-            make_djot_table(zip(table_rows, table_data[0]))))
+            make_djot_table(zip(table_rows, table_data[0])))

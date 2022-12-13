@@ -11,7 +11,7 @@ def pull_YMF(ogFile):
             if line.startswith("date-created") or line.startswith('force'):
                 justText.remove(line)
     jesus = yaml.safe_load('\n'.join(justText))
-    jesus['fileName'] = ogFile.name
+    jesus['fileName'] = ogFile.with_suffix(".html").name
     return jesus
 
 def get_table_data_by_key(keys: list, books: dict, make_link=True) -> list:
@@ -25,7 +25,7 @@ def get_table_data_by_key(keys: list, books: dict, make_link=True) -> list:
                 dataList.append(book[key].strftime("%b %d, %Y"))
             elif isinstance(book[key], int):
                 dataList.append(book[key].__str__())
-            elif not book[key]:
+            elif isinstance(book[key], type(None)):
                 dataList.append('')
             else:
                 dataList.append(book[key])
